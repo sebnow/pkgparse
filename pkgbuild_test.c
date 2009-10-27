@@ -20,19 +20,29 @@
  */
 
 #include "cmockery.h"
+#include <stdlib.h>
+#include <stdio.h>
 
-void test_unquote_simple_string(void **state);
-void test_unquote_subsequenctly_quoted(void **state);
-void test_parse_array(void **state);
-void test_parse_pkgbuild_minimal(void **state);
+#include "pkgbuild.h"
 
-int main()
+void test_parse_pkgbuild_minimal(void **state)
 {
-	const UnitTest tests[] = {
-		unit_test(test_unquote_simple_string),
-		unit_test(test_unquote_subsequenctly_quoted),
-		unit_test(test_parse_array),
-		unit_test(test_parse_pkgbuild_minimal),
-	};
-	return run_tests(tests);
+	FILE *fp;
+	pkgbuild_t *pkgbuild;
+
+	fp = tmpfile();
+	fprintf(fp,
+		"pkgname=foobar\n"
+		"pkgver=1.0\n"
+		"pkgrel=1\n"
+		"pkgdesc=\"dummy package\"\n");
+	fseek(fp, 0, SEEK_SET);
+	pkgbuild = pkgbuild_parse(fp);
+	fclose(fp);
+
+	assert_string_equal(pkgbuild_name(pkgbuild), "foobar");
+	assert_string_equal(pkgbuild_version(pkgbuild), "1.0");
+	assert_true(pkgbuild_rel(pkgbuild) == 1);
+	assert_string_equal(pkgbuild_desc(pkgbuild), "dummy package");
+	pkgbuild_release(pkgbuild);
 }

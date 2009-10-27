@@ -53,6 +53,7 @@ typedef struct {
 } pkgbuild_t;
 
 pkgbuild_t *pkgbuild_new();
+pkgbuild_t *pkgbuild_parse(FILE *fp);
 void pkgbuild_release(pkgbuild_t *pkgbuild);
 pkgbuild_t *pkgbuild_retain(pkgbuild_t *pkgbuild);
 

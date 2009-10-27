@@ -19,20 +19,48 @@
  * SOFTWARE.
  */
 
-#include "cmockery.h"
+%{
+	#include <stdio.h>
+	#include <string.h>
 
-void test_unquote_simple_string(void **state);
-void test_unquote_subsequenctly_quoted(void **state);
-void test_parse_array(void **state);
-void test_parse_pkgbuild_minimal(void **state);
+	#define YYSTYPE char *
+	#include "y.tab.h"
 
-int main()
+	extern YYSTYPE yylval;
+	extern int yyleng;
+
+	int line = 1;
+%}
+
+%%
+
+"#"[^\n]*"\n" ;
+^[\t ]+ ;
+
+"if [" { return IF; }
+"then" { return THEN; }
+"else" { return ELSE; }
+"elif" { return ELIF; }
+"fi" { return FI; }
+
+[a-zA-Z_][a-zA-Z0-9_]*=[^#\n]* {
+	yylval = strdup(yytext);
+	return ASSIGNMENT_WORD;
+}
+
+[a-zA-Z_][a-zA-Z0-9_]* { return NAME; }
+
+"\n" { line++; return NEWLINE; }
+
+. { return yytext[0]; }
+
+%%
+
+void yyerror(char *msg)
 {
-	const UnitTest tests[] = {
-		unit_test(test_unquote_simple_string),
-		unit_test(test_unquote_subsequenctly_quoted),
-		unit_test(test_parse_array),
-		unit_test(test_parse_pkgbuild_minimal),
-	};
-	return run_tests(tests);
+	fprintf(stderr, "ERROR:%d: %s\n", line, msg);
+}
+
+int yywrap() {
+	return 1;
 }
