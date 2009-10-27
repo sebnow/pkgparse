@@ -1,4 +1,4 @@
-OBJ = pkgbuild.o
+OBJ = pkgbuild.o symbol.o
 
 all: $(OBJ)
 
