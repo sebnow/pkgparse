@@ -46,3 +46,27 @@ void test_parse_pkgbuild_minimal(void **state)
 	assert_string_equal(pkgbuild_desc(pkgbuild), "dummy package");
 	pkgbuild_release(pkgbuild);
 }
+
+void test_parse_pkgbuild_arrays(void **state)
+{
+	FILE *fp;
+	pkgbuild_t *pkgbuild;
+	char **array;
+
+	fp = tmpfile();
+	fprintf(fp,
+		"license=('MIT')\n"
+		"arch=('i686' 'x86_64')\n");
+	fseek(fp, 0, SEEK_SET);
+	pkgbuild = pkgbuild_parse(fp);
+	fclose(fp);
+
+	array = pkgbuild_licenses(pkgbuild);
+	assert_true(array != NULL);
+	assert_string_equal(array[0], "MIT");
+	array = pkgbuild_architectures(pkgbuild);
+	assert_true(array != NULL);
+	assert_string_equal(array[0], "i686");
+	assert_string_equal(array[1], "x86_64");
+	pkgbuild_release(pkgbuild);
+}

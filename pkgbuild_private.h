@@ -57,6 +57,23 @@ void pkgbuild_set_version(struct _pkgbuild_t *pkgbuild, char *version);
 void pkgbuild_set_rel(struct _pkgbuild_t *pkgbuild, float rel);
 void pkgbuild_set_desc(struct _pkgbuild_t *pkgbuild, char *desc);
 void pkgbuild_set_url(struct _pkgbuild_t *pkgbuild, char *url);
+void pkgbuild_set_licenses(pkgbuild_t *pkgbuild, char **licenses);
 void pkgbuild_set_install(struct _pkgbuild_t *pkgbuild, char *install);
+void pkgbuild_set_sources(pkgbuild_t *pkgbuild, char **sources);
+void pkgbuild_set_noextract(pkgbuild_t *pkgbuild, char **noextract);
+void pkgbuild_set_md5sums(pkgbuild_t *pkgbuild, char **md5sums);
+void pkgbuild_set_sha1sums(pkgbuild_t *pkgbuild, char **sha1sums);
+void pkgbuild_set_sha256sums(pkgbuild_t *pkgbuild, char **sha256sums);
+void pkgbuild_set_sha384sums(pkgbuild_t *pkgbuild, char **sha384sums);
+void pkgbuild_set_sha512sums(pkgbuild_t *pkgbuild, char **sha512sums);
+void pkgbuild_set_groups(pkgbuild_t *pkgbuild, char **groups);
+void pkgbuild_set_architectures(pkgbuild_t *pkgbuild, char **architectures);
+void pkgbuild_set_backup(pkgbuild_t *pkgbuild, char **backup);
+void pkgbuild_set_makedepends(pkgbuild_t *pkgbuild, char **makedepends);
+void pkgbuild_set_optdepends(pkgbuild_t *pkgbuild, char **optdepends);
+void pkgbuild_set_conflicts(pkgbuild_t *pkgbuild, char **conflicts);
+void pkgbuild_set_provides(pkgbuild_t *pkgbuild, char **provides);
+void pkgbuild_set_replaces(pkgbuild_t *pkgbuild, char **replaces);
+void pkgbuild_set_options(pkgbuild_t *pkgbuild, char **options);
 
 #endif

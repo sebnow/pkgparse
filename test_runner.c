@@ -25,6 +25,7 @@ void test_unquote_simple_string(void **state);
 void test_unquote_subsequenctly_quoted(void **state);
 void test_parse_array(void **state);
 void test_parse_pkgbuild_minimal(void **state);
+void test_parse_pkgbuild_arrays(void **state);
 
 int main()
 {
@@ -33,6 +34,7 @@ int main()
 		unit_test(test_unquote_subsequenctly_quoted),
 		unit_test(test_parse_array),
 		unit_test(test_parse_pkgbuild_minimal),
+		unit_test(test_parse_pkgbuild_arrays),
 	};
 	return run_tests(tests);
 }

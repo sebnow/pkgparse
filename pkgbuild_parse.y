@@ -137,9 +137,99 @@ static void _set_pkgbuild_fields_from_table(pkgbuild_t *pkgbuild, table_t *table
 		pkgbuild_set_url(pkgbuild, symbol_string(symbol));
 	}
 
+	symbol = table_lookup(table, "license");
+	if(symbol != NULL) {
+		pkgbuild_set_licenses(pkgbuild, symbol_array(symbol));
+	}
+
 	symbol = table_lookup(table, "install");
 	if(symbol != NULL) {
 		pkgbuild_set_install(pkgbuild, symbol_string(symbol));
+	}
+
+	symbol = table_lookup(table, "source");
+	if(symbol != NULL) {
+		pkgbuild_set_sources(pkgbuild, symbol_array(symbol));
+	}
+
+	symbol = table_lookup(table, "noextract");
+	if(symbol != NULL) {
+		pkgbuild_set_noextract(pkgbuild, symbol_array(symbol));
+	}
+
+	symbol = table_lookup(table, "md5sums");
+	if(symbol != NULL) {
+		pkgbuild_set_md5sums(pkgbuild, symbol_array(symbol));
+	}
+
+	symbol = table_lookup(table, "sha1sums");
+	if(symbol != NULL) {
+		pkgbuild_set_sha1sums(pkgbuild, symbol_array(symbol));
+	}
+
+	symbol = table_lookup(table, "sha256sums");
+	if(symbol != NULL) {
+		pkgbuild_set_sha256sums(pkgbuild, symbol_array(symbol));
+	}
+
+	symbol = table_lookup(table, "sha384sums");
+	if(symbol != NULL) {
+		pkgbuild_set_sha384sums(pkgbuild, symbol_array(symbol));
+	}
+
+	symbol = table_lookup(table, "sha512sums");
+	if(symbol != NULL) {
+		pkgbuild_set_sha512sums(pkgbuild, symbol_array(symbol));
+	}
+
+	symbol = table_lookup(table, "groups");
+	if(symbol != NULL) {
+		pkgbuild_set_groups(pkgbuild, symbol_array(symbol));
+	}
+
+	symbol = table_lookup(table, "arch");
+	if(symbol != NULL) {
+		pkgbuild_set_architectures(pkgbuild, symbol_array(symbol));
+	}
+
+	symbol = table_lookup(table, "backup");
+	if(symbol != NULL) {
+		pkgbuild_set_backup(pkgbuild, symbol_array(symbol));
+	}
+
+	symbol = table_lookup(table, "depends");
+	if(symbol != NULL) {
+		pkgbuild_set_depends(pkgbuild, symbol_array(symbol));
+	}
+
+	symbol = table_lookup(table, "makedepends");
+	if(symbol != NULL) {
+		pkgbuild_set_makedepends(pkgbuild, symbol_array(symbol));
+	}
+
+	symbol = table_lookup(table, "optdepends");
+	if(symbol != NULL) {
+		pkgbuild_set_optdepends(pkgbuild, symbol_array(symbol));
+	}
+
+	symbol = table_lookup(table, "conflicts");
+	if(symbol != NULL) {
+		pkgbuild_set_conflicts(pkgbuild, symbol_array(symbol));
+	}
+
+	symbol = table_lookup(table, "provides");
+	if(symbol != NULL) {
+		pkgbuild_set_provides(pkgbuild, symbol_array(symbol));
+	}
+
+	symbol = table_lookup(table, "replaces");
+	if(symbol != NULL) {
+		pkgbuild_set_replaces(pkgbuild, symbol_array(symbol));
+	}
+
+	symbol = table_lookup(table, "options");
+	if(symbol != NULL) {
+		pkgbuild_set_options(pkgbuild, symbol_array(symbol));
 	}
 }
 

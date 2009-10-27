@@ -98,39 +98,6 @@ pkgbuild_t *pkgbuild_retain(pkgbuild_t *pkgbuild)
 	return pkgbuild;
 }
 
-void pkgbuild_set_name(struct _pkgbuild_t *pkgbuild, char *name)
-{
-	if(pkgbuild == NULL) {
-		return;
-	}
-	free(pkgbuild->name);
-	pkgbuild->name = strdup(name);
-}
-
-char *pkgbuild_name(pkgbuild_t *pkgbuild) {
-	char *name;
-	if(pkgbuild != NULL) {
-		name = pkgbuild->name;
-	}
-	return name;
-}
-
-void pkgbuild_set_version(struct _pkgbuild_t *pkgbuild, char *version)
-{
-	if(pkgbuild != NULL) {
-		free(pkgbuild->version);
-		pkgbuild->version = strdup(version);
-	}
-}
-
-char *pkgbuild_version(pkgbuild_t *pkgbuild) {
-	char *version;
-	if(pkgbuild != NULL) {
-		version = pkgbuild->version;
-	}
-	return version;
-}
-
 void pkgbuild_set_rel(struct _pkgbuild_t *pkgbuild, float rel)
 {
 	if(pkgbuild != NULL) {
@@ -146,214 +113,87 @@ float pkgbuild_rel(pkgbuild_t *pkgbuild) {
 	return rel;
 }
 
-void pkgbuild_set_desc(struct _pkgbuild_t *pkgbuild, char *desc)
-{
-	if(pkgbuild != NULL) {
-		free(pkgbuild->desc);
-		pkgbuild->desc = strdup(desc);
-	}
+/* Some preprocessing magic to get rid of code duplication. The macros below
+ * will define setter and getter functions for fields in a structure. */
+
+#define MK_STRING_GETTER(object, field) \
+char *object ## _ ## field(object ## _t *object) \
+{ \
+	char *field; \
+	if(object != NULL) { \
+		field = object->field; \
+	} \
+	return field; \
 }
 
-char *pkgbuild_desc(pkgbuild_t *pkgbuild) {
-	char *desc;
-	if(pkgbuild != NULL) {
-		desc = pkgbuild->desc;
-	}
-	return desc;
+#define MK_STRING_SETTER(object, field) \
+void object ## _set_ ## field(struct _ ## object ## _t *object, char *field) \
+{ \
+	if(object == NULL) { \
+		return; \
+	} \
+	free(object->field); \
+	object->field = strdup(field); \
 }
 
-void pkgbuild_set_url(struct _pkgbuild_t *pkgbuild, char *url)
-{
-	if(pkgbuild != NULL) {
-		free(pkgbuild->url);
-		pkgbuild->url = strdup(url);
-	}
+#define MK_ARRAY_GETTER(object, field) \
+char **object ## _ ## field(object ## _t *object) \
+{ \
+	char **field = NULL; \
+	if(object != NULL) { \
+		field = object->field; \
+	} \
+	return field; \
 }
 
-char *pkgbuild_url(pkgbuild_t *pkgbuild) {
-	char *url;
-	if(pkgbuild != NULL) {
-		url = pkgbuild->url;
-	}
-	return url;
+#define MK_ARRAY_SETTER(object, field) \
+void object ## _set_ ## field(struct _ ## object ## _t *object, char **field) \
+{ \
+	int i; \
+	if(object != NULL) { \
+		if(field == NULL) { \
+			object->field = NULL; \
+		} else { \
+			/* Count elements in field */ \
+			for(i = 0; field[i] != NULL; i++); \
+			object->field = malloc((i + 1) * sizeof(*field)); \
+			object->field[i] = NULL; \
+			for(i = 0; field[i] != NULL; i++) { \
+				object->field[i] = strdup(field[i]); \
+			} \
+		} \
+	} \
 }
 
-void pkgbuild_set_install(struct _pkgbuild_t *pkgbuild, char *install)
-{
-	if(pkgbuild != NULL) {
-		free(pkgbuild->install);
-		pkgbuild->install = strdup(install);
-	}
-}
-
-char *pkgbuild_install(pkgbuild_t *pkgbuild) {
-	char *install;
-	if(pkgbuild != NULL) {
-		install = pkgbuild->install;
-	}
-	return install;
-}
-
-char **pkgbuild_licenses(pkgbuild_t *pkgbuild)
-{
-	char **licenses = NULL;
-	if(pkgbuild != NULL) {
-		licenses = pkgbuild->licenses;
-	}
-	return licenses;
-}
-
-char **pkgbuild_sources(pkgbuild_t *pkgbuild)
-{
-	char **sources = NULL;
-	if(pkgbuild != NULL) {
-		sources = pkgbuild->sources;
-	}
-	return sources;
-}
-
-char **pkgbuild_noextract(pkgbuild_t *pkgbuild)
-{
-	char **noextract = NULL;
-	if(pkgbuild != NULL) {
-		noextract = pkgbuild->noextract;
-	}
-	return noextract;
-}
-
-char **pkgbuild_md5sums(pkgbuild_t *pkgbuild)
-{
-	char **md5sums = NULL;
-	if(pkgbuild != NULL) {
-		md5sums = pkgbuild->md5sums;
-	}
-	return md5sums;
-}
-
-char **pkgbuild_sha1sums(pkgbuild_t *pkgbuild)
-{
-	char **sha1sums = NULL;
-	if(pkgbuild != NULL) {
-		sha1sums = pkgbuild->sha1sums;
-	}
-	return sha1sums;
-}
-
-char **pkgbuild_sha256sums(pkgbuild_t *pkgbuild)
-{
-	char **sha256sums = NULL;
-	if(pkgbuild != NULL) {
-		sha256sums = pkgbuild->sha256sums;
-	}
-	return sha256sums;
-}
-
-char **pkgbuild_sha384sums(pkgbuild_t *pkgbuild)
-{
-	char **sha384sums = NULL;
-	if(pkgbuild != NULL) {
-		sha384sums = pkgbuild->sha384sums;
-	}
-	return sha384sums;
-}
-
-char **pkgbuild_sha512sums(pkgbuild_t *pkgbuild)
-{
-	char **sha512sums = NULL;
-	if(pkgbuild != NULL) {
-		sha512sums = pkgbuild->sha512sums;
-	}
-	return sha512sums;
-}
-
-char **pkgbuild_groups(pkgbuild_t *pkgbuild)
-{
-	char **groups = NULL;
-	if(pkgbuild != NULL) {
-		groups = pkgbuild->groups;
-	}
-	return groups;
-}
-
-char **pkgbuild_architectures(pkgbuild_t *pkgbuild)
-{
-	char **architectures = NULL;
-	if(pkgbuild != NULL) {
-		architectures = pkgbuild->architectures;
-	}
-	return architectures;
-}
-
-char **pkgbuild_backup(pkgbuild_t *pkgbuild)
-{
-	char **backup = NULL;
-	if(pkgbuild != NULL) {
-		backup = pkgbuild->backup;
-	}
-	return backup;
-}
-
-char **pkgbuild_depends(pkgbuild_t *pkgbuild)
-{
-	char **depends = NULL;
-	if(pkgbuild != NULL) {
-		depends = pkgbuild->depends;
-	}
-	return depends;
-}
-
-char **pkgbuild_makedepends(pkgbuild_t *pkgbuild)
-{
-	char **makedepends = NULL;
-	if(pkgbuild != NULL) {
-		makedepends = pkgbuild->makedepends;
-	}
-	return makedepends;
-}
-
-char **pkgbuild_optdepends(pkgbuild_t *pkgbuild)
-{
-	char **optdepends = NULL;
-	if(pkgbuild != NULL) {
-		optdepends = pkgbuild->optdepends;
-	}
-	return optdepends;
-}
-
-char **pkgbuild_conflicts(pkgbuild_t *pkgbuild)
-{
-	char **conflicts = NULL;
-	if(pkgbuild != NULL) {
-		conflicts = pkgbuild->conflicts;
-	}
-	return conflicts;
-}
-
-char **pkgbuild_provides(pkgbuild_t *pkgbuild)
-{
-	char **provides = NULL;
-	if(pkgbuild != NULL) {
-		provides = pkgbuild->provides;
-	}
-	return provides;
-}
-
-char **pkgbuild_replaces(pkgbuild_t *pkgbuild)
-{
-	char **replaces = NULL;
-	if(pkgbuild != NULL) {
-		replaces = pkgbuild->replaces;
-	}
-	return replaces;
-}
-
-char **pkgbuild_options(pkgbuild_t *pkgbuild)
-{
-	char **options = NULL;
-	if(pkgbuild != NULL) {
-		options = pkgbuild->options;
-	}
-	return options;
-}
+/* While we're at it, why not make them "properties"? */
+#define MK_STRING_PROPERTY(object, field) \
+	MK_STRING_SETTER(object, field) \
+	MK_STRING_GETTER(object, field)
+#define MK_ARRAY_PROPERTY(object, field) \
+	MK_ARRAY_SETTER(object, field) \
+	MK_ARRAY_GETTER(object, field)
 
 
+MK_STRING_PROPERTY(pkgbuild, name)
+MK_STRING_PROPERTY(pkgbuild, version)
+MK_STRING_PROPERTY(pkgbuild, desc)
+MK_STRING_PROPERTY(pkgbuild, url)
+MK_ARRAY_PROPERTY(pkgbuild, licenses)
+MK_STRING_PROPERTY(pkgbuild, install)
+MK_ARRAY_PROPERTY(pkgbuild, sources)
+MK_ARRAY_PROPERTY(pkgbuild, noextract)
+MK_ARRAY_PROPERTY(pkgbuild, md5sums)
+MK_ARRAY_PROPERTY(pkgbuild, sha1sums)
+MK_ARRAY_PROPERTY(pkgbuild, sha256sums)
+MK_ARRAY_PROPERTY(pkgbuild, sha384sums)
+MK_ARRAY_PROPERTY(pkgbuild, sha512sums)
+MK_ARRAY_PROPERTY(pkgbuild, groups)
+MK_ARRAY_PROPERTY(pkgbuild, architectures)
+MK_ARRAY_PROPERTY(pkgbuild, backup)
+MK_ARRAY_PROPERTY(pkgbuild, depends)
+MK_ARRAY_PROPERTY(pkgbuild, makedepends)
+MK_ARRAY_PROPERTY(pkgbuild, optdepends)
+MK_ARRAY_PROPERTY(pkgbuild, conflicts)
+MK_ARRAY_PROPERTY(pkgbuild, provides)
+MK_ARRAY_PROPERTY(pkgbuild, replaces)
+MK_ARRAY_PROPERTY(pkgbuild, options)
