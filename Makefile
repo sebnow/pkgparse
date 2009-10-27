@@ -6,6 +6,8 @@ YFLAGS += -d
 
 ifneq ($(DEBUG), 0)
 	CFLAGS += -g -DDEBUG
+	YFLAGS += -t
+	LFLAGS += -d
 endif
 
 all: $(OBJ)

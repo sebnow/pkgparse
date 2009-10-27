@@ -31,6 +31,7 @@
 	#define YYSTYPE char *
 
 	extern FILE *yyin;
+	extern int yydebug;
 	extern int line;
 
 	static void _handle_assignment(char *string);
@@ -194,6 +195,9 @@ static void _handle_assignment(char *string)
 pkgbuild_t *pkgbuild_parse(FILE *fp)
 {
 	pkgbuild_t *pkgbuild = NULL;
+#if DEBUG
+		yydebug = 1;
+#endif
 
 	if(fp != NULL) {
 		g_table = table_new();
