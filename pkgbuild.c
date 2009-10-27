@@ -23,6 +23,7 @@
 #include <string.h>
 
 #include "pkgbuild.h"
+#include "pkgbuild_private.h"
 
 static void _free_array(char **array)
 {
@@ -97,7 +98,7 @@ pkgbuild_t *pkgbuild_retain(pkgbuild_t *pkgbuild)
 	return pkgbuild;
 }
 
-void pkgbuild_set_name(pkgbuild_t *pkgbuild, char *name)
+void pkgbuild_set_name(struct _pkgbuild_t *pkgbuild, char *name)
 {
 	if(pkgbuild == NULL) {
 		return;
@@ -114,7 +115,7 @@ char *pkgbuild_name(pkgbuild_t *pkgbuild) {
 	return name;
 }
 
-void pkgbuild_set_version(pkgbuild_t *pkgbuild, char *version)
+void pkgbuild_set_version(struct _pkgbuild_t *pkgbuild, char *version)
 {
 	if(pkgbuild != NULL) {
 		free(pkgbuild->version);
@@ -130,7 +131,7 @@ char *pkgbuild_version(pkgbuild_t *pkgbuild) {
 	return version;
 }
 
-void pkgbuild_set_rel(pkgbuild_t *pkgbuild, float rel)
+void pkgbuild_set_rel(struct _pkgbuild_t *pkgbuild, float rel)
 {
 	if(pkgbuild != NULL) {
 		pkgbuild->rel = rel;
@@ -145,7 +146,7 @@ float pkgbuild_rel(pkgbuild_t *pkgbuild) {
 	return rel;
 }
 
-void pkgbuild_set_desc(pkgbuild_t *pkgbuild, char *desc)
+void pkgbuild_set_desc(struct _pkgbuild_t *pkgbuild, char *desc)
 {
 	if(pkgbuild != NULL) {
 		free(pkgbuild->desc);
@@ -161,7 +162,7 @@ char *pkgbuild_desc(pkgbuild_t *pkgbuild) {
 	return desc;
 }
 
-void pkgbuild_set_url(pkgbuild_t *pkgbuild, char *url)
+void pkgbuild_set_url(struct _pkgbuild_t *pkgbuild, char *url)
 {
 	if(pkgbuild != NULL) {
 		free(pkgbuild->url);
@@ -177,7 +178,7 @@ char *pkgbuild_url(pkgbuild_t *pkgbuild) {
 	return url;
 }
 
-void pkgbuild_set_install(pkgbuild_t *pkgbuild, char *install)
+void pkgbuild_set_install(struct _pkgbuild_t *pkgbuild, char *install)
 {
 	if(pkgbuild != NULL) {
 		free(pkgbuild->install);

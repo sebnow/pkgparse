@@ -24,6 +24,7 @@
 	#include <string.h>
 
 	#include "pkgbuild.h"
+	#include "pkgbuild_private.h"
 	#include "symbol.h"
 	#include "sh_utility.h"
 

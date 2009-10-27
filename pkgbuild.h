@@ -24,51 +24,18 @@
 
 #include <stdio.h>
 
-typedef struct {
-	unsigned int refcount;
-	char *name;
-	char *version;
-	float rel;
-	char *desc;
-	char *url;
-	char **licenses;
-	char *install;
-	char **sources;
-	char **noextract;
-	char **md5sums;
-	char **sha1sums;
-	char **sha256sums;
-	char **sha384sums;
-	char **sha512sums;
-	char **groups;
-	char **architectures;
-	char **backup;
-	char **depends;
-	char **makedepends;
-	char **optdepends;
-	char **conflicts;
-	char **provides;
-	char **replaces;
-	char **options;
-} pkgbuild_t;
+typedef struct _pkgbuild_t pkgbuild_t;
 
-pkgbuild_t *pkgbuild_new();
 pkgbuild_t *pkgbuild_parse(FILE *fp);
 void pkgbuild_release(pkgbuild_t *pkgbuild);
 pkgbuild_t *pkgbuild_retain(pkgbuild_t *pkgbuild);
 
-void pkgbuild_set_name(pkgbuild_t *pkgbuild, char *name);
 char *pkgbuild_name(pkgbuild_t *pkgbuild);
-void pkgbuild_set_version(pkgbuild_t *pkgbuild, char *version);
 char *pkgbuild_version(pkgbuild_t *pkgbuild);
-void pkgbuild_set_rel(pkgbuild_t *pkgbuild, float rel);
 float pkgbuild_rel(pkgbuild_t *pkgbuild);
-void pkgbuild_set_desc(pkgbuild_t *pkgbuild, char *desc);
 char *pkgbuild_desc(pkgbuild_t *pkgbuild);
-void pkgbuild_set_url(pkgbuild_t *pkgbuild, char *url);
 char *pkgbuild_url(pkgbuild_t *pkgbuild);
 char **pkgbuild_licenses(pkgbuild_t *pkgbuild);
-void pkgbuild_set_install(pkgbuild_t *pkgbuild, char *install);
 char *pkgbuild_install(pkgbuild_t *pkgbuild);
 char **pkgbuild_sources(pkgbuild_t *pkgbuild);
 char **pkgbuild_noextract(pkgbuild_t *pkgbuild);
