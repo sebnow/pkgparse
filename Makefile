@@ -1,7 +1,12 @@
+DEBUG ?= 0
 OBJ = pkgbuild.o symbol.o sh_utility.o y.tab.o lex.yy.o
 TEST_OBJ = sh_utility_test.o pkgbuild_test.o test_runner.o
 
 YFLAGS += -d
+
+ifneq ($(DEBUG), 0)
+	CFLAGS += -g -DDEBUG
+endif
 
 all: $(OBJ)
 
