@@ -19,30 +19,48 @@
  * SOFTWARE.
  */
 
-#ifndef SH_UTILITY_H
-#define SH_UTILITY_H
+#include "cmockery.h"
+#include <stdlib.h>
+#include <string.h>
 
-/** Parse a bash array into a string array
- *
- * The strings contained within the returned array will be normalised
- * and unquoted. The array, and each string is dynamically allocated and
- * should be freed by the user.
- *
- * @see sh_unquote()
- * @param string The string containing an array. It should be in the
- * format "(a b c)"
- * @return A NULL-terminated array of strings
- */
-char **sh_array(char *string);
+#include "sh_utility.h"
 
-/** Remove quotes and unescape escaped quotes
- *
- * A string such as '"foo \"bar\""' will be unquoted to produce
- * 'foo "bar"'
- *
- * @param string The string to be unquoted
- * @return A pointer to a new string on success, otherwise a null pointer.
- */
-char *sh_unquote(char *string);
+void test_unquote_simple_string(void **state)
+{
+	char string[] = "\"foo bar spam eggs ham\"";
+	char *parsed = sh_unquote(string);
+	assert_string_equal(parsed, "foo bar spam eggs ham");
+	free(parsed);
+}
 
-#endif
+void test_unquote_subsequenctly_quoted(void **state)
+{
+	char string[] = "foo \"bar spam\" eggs ham";
+	char *parsed = sh_unquote(string);
+	assert_string_equal(parsed, "foo \"bar spam\" eggs ham");
+	free(parsed);
+}
+
+void test_parse_array(void **state)
+{
+	char *array1 = "(foo bar spam eggs ham)";
+	char *array2 = "(spam \"eggs ham\")";
+	char **parsed;
+
+	parsed = sh_array(array1);
+	assert_string_equal(parsed[0], "foo");
+	assert_string_equal(parsed[2], "spam");
+	assert_string_equal(parsed[4], "ham");
+	free(parsed[0]);
+	free(parsed[1]);	
+	free(parsed[2]);
+	free(parsed[3]);
+	free(parsed[4]);
+	free(parsed);
+
+	parsed = sh_array(array2);
+	assert_string_equal(parsed[1], "eggs ham");
+	free(parsed[0]);
+	free(parsed[1]);
+	free(parsed);
+}

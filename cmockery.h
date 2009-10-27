@@ -19,30 +19,7 @@
  * SOFTWARE.
  */
 
-#ifndef SH_UTILITY_H
-#define SH_UTILITY_H
-
-/** Parse a bash array into a string array
- *
- * The strings contained within the returned array will be normalised
- * and unquoted. The array, and each string is dynamically allocated and
- * should be freed by the user.
- *
- * @see sh_unquote()
- * @param string The string containing an array. It should be in the
- * format "(a b c)"
- * @return A NULL-terminated array of strings
- */
-char **sh_array(char *string);
-
-/** Remove quotes and unescape escaped quotes
- *
- * A string such as '"foo \"bar\""' will be unquoted to produce
- * 'foo "bar"'
- *
- * @param string The string to be unquoted
- * @return A pointer to a new string on success, otherwise a null pointer.
- */
-char *sh_unquote(char *string);
-
-#endif
+#include <stdarg.h>
+#include <stddef.h>
+#include <setjmp.h>
+#include <google/cmockery.h>
