@@ -197,6 +197,7 @@ void symbol_set_array(symbol_t *symbol, char **rvalue)
 			/* Count elements */
 			for(i = 0; rvalue[i] != NULL; i++);
 			ptr = malloc((i + 1) * sizeof(*ptr));
+			ptr[i] = NULL;
 			for(i = 0; rvalue[i] != NULL; i++) {
 				ptr[i] = strdup(rvalue[i]);
 			}
