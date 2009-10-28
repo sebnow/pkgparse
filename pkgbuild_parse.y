@@ -237,7 +237,7 @@ static void _handle_assignment(char *string)
 	symbol_t *symbol;
 	char *lvalue;
 	char *rvalue;
-	char *unquoted;
+	char *str;
 	char **array;
 	char **array_ptr;
 
@@ -245,10 +245,9 @@ static void _handle_assignment(char *string)
 	strsplit(string, '=', &lvalue, &rvalue);
 
 	symbol = symbol_new(lvalue);
-
 	/* Are we assigning an array or string? */
 	if(*rvalue == '(') {
-		array = sh_array(rvalue);
+		array = sh_parse_array(g_table, rvalue);
 		symbol_set_array(symbol, array);
 		if(array != NULL) {
 			for(array_ptr = array; *array_ptr != NULL; array_ptr++) {
@@ -257,9 +256,9 @@ static void _handle_assignment(char *string)
 			free(array);
 		}
 	} else {
-		unquoted = sh_unquote(rvalue);
-		symbol_set_string(symbol, unquoted);
-		free(unquoted);
+		str = sh_parse_word(g_table, rvalue);
+		symbol_set_string(symbol, str);
+		free(str);
 	}
 	table_insert(g_table, symbol);
 	symbol_release(symbol);

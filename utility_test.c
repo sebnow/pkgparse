@@ -25,6 +25,45 @@
 
 #include "utility.h"
 
+/** Setup function to create a table with test data
+ *
+ * The following symbols are defined:
+ *  - foo => foobar
+ *  - ham => eggs and ham
+ *  - _eggs => chickens
+ *
+ * @param table pointer to the address where the table should be stored
+ */
+void create_table(void **table)
+{
+	symbol_t *symbol;
+	*table = table_new();
+
+	symbol = symbol_new("foo");
+	symbol_set_string(symbol, "foobar");
+	table_insert(*table, symbol);
+	symbol_release(symbol);
+
+	symbol = symbol_new("ham");
+	symbol_set_string(symbol, "eggs and ham");
+	table_insert(*table, symbol);
+	symbol_release(symbol);
+
+	symbol = symbol_new("_eggs");
+	symbol_set_string(symbol, "chickens");
+	table_insert(*table, symbol);
+	symbol_release(symbol);
+}
+
+/** Teardown function to release a table created in create_table()
+ *
+ * @param table pointer to the address where the table is stored
+ */
+void release_table(void **table)
+{
+	table_release(*table);
+}
+
 void test_strsplit(void **state)
 {
 	char *string1 = "foo=bar";
@@ -78,13 +117,13 @@ void test_unquote_subsequenctly_quoted(void **state)
 	free(parsed);
 }
 
-void test_parse_array(void **state)
+void test_split_array(void **state)
 {
 	char *array1 = "(foo bar spam eggs ham)";
 	char *array2 = "(spam \"eggs ham\")";
 	char **parsed;
 
-	parsed = sh_array(array1);
+	parsed = sh_split_array(array1);
 	assert_string_equal(parsed[0], "foo");
 	assert_string_equal(parsed[2], "spam");
 	assert_string_equal(parsed[4], "ham");
@@ -95,9 +134,30 @@ void test_parse_array(void **state)
 	free(parsed[4]);
 	free(parsed);
 
-	parsed = sh_array(array2);
-	assert_string_equal(parsed[1], "eggs ham");
+	parsed = sh_split_array(array2);
+	assert_string_equal(parsed[1], "\"eggs ham\"");
 	free(parsed[0]);
 	free(parsed[1]);
+	free(parsed);
+}
+
+/* TODO: What is expected if an invalid expansion like '${foo' is attempted?
+ * Bash returns a "bad substitution" error. This behaviour has to be
+ * implemented in the lexer. */
+void test_sh_parse_array_simple_expanded(void **table)
+{
+	char *array = "(${foo} spam \"green $ham\")";
+	char **parsed;
+	char **ptr;
+	
+	parsed = sh_parse_array(*table, array);
+	assert_true(parsed != NULL);
+	assert_string_equal(parsed[0], "foobar");
+	assert_string_equal(parsed[1], "spam");
+	assert_string_equal(parsed[2], "green eggs and ham");
+
+	for(ptr = parsed; *ptr != NULL; ptr++) {
+		free(*ptr);
+	}
 	free(parsed);
 }

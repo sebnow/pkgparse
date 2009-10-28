@@ -22,6 +22,8 @@
 #ifndef UTILITY_H
 #define UTILITY_H
 
+#include "symbol.h"
+
 /** Split \c string into two strings, separated by \split_by
  *
  * The string \string shall be split using \c split_by, resulting in the left
@@ -39,18 +41,17 @@
  */
 int strsplit(char *string, char split_by, char **left, char **right);
 
-/** Parse a bash array into a string array
+/** Split a bash array into a string array
  *
- * The strings contained within the returned array will be normalised
- * and unquoted. The array, and each string is dynamically allocated and
- * should be freed by the user.
+ * The array, and each string is dynamically allocated and * should be freed
+ * by the user.
  *
  * @see sh_unquote()
  * @param string The string containing an array. It should be in the
  * format "(a b c)"
  * @return A NULL-terminated array of strings
  */
-char **sh_array(char *string);
+char **sh_split_array(char *string);
 
 /** Remove quotes and unescape escaped quotes
  *
@@ -61,5 +62,8 @@ char **sh_array(char *string);
  * @return A pointer to a new string on success, otherwise a null pointer.
  */
 char *sh_unquote(char *string);
+
+char **sh_parse_array(table_t *table, char *string);
+char *sh_parse_word(table_t *table, char *string);
 
 #endif

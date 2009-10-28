@@ -70,3 +70,43 @@ void test_parse_pkgbuild_arrays(void **state)
 	assert_string_equal(array[1], "x86_64");
 	pkgbuild_release(pkgbuild);
 }
+
+void test_parse_pkgbuild_simple(void **state)
+{
+	FILE *fp;
+	pkgbuild_t *pkgbuild;
+	char **array;
+
+	fp = tmpfile();
+	fprintf(fp,
+		"pkgname=patch\n"
+		"pkgver=2.5.4\n"
+		"pkgrel=3\n"
+		"pkgdesc=\"A utility to apply patch files to original sources\"\n"
+		"arch=('i686' 'x86_64')\n"
+		"url=\"http://www.gnu.org/software/$pkgname/$pkgname.html\"\n"
+		"license=('GPL')\n"
+		"groups=('base-devel')\n"
+		"depends=('glibc' 'ed')\n"
+		"source=(ftp://ftp.gnu.org/gnu/$pkgname/$pkgname-$pkgver.tar.gz)\n"
+		"md5sums=('ee5ae84d115f051d87fcaaef3b4ae782')\n");
+	fseek(fp, 0, SEEK_SET);
+	pkgbuild = pkgbuild_parse(fp);
+	fclose(fp);
+
+	assert_string_equal(pkgbuild_name(pkgbuild), "patch");
+	assert_string_equal(pkgbuild_version(pkgbuild), "2.5.4");
+	assert_true(pkgbuild_rel(pkgbuild) == 3.0f);
+	array = pkgbuild_architectures(pkgbuild);
+	assert_string_equal(array[0], "i686");
+	assert_string_equal(array[1], "x86_64");
+	assert_string_equal(pkgbuild_url(pkgbuild),
+		"http://www.gnu.org/software/patch/patch.html");
+	array = pkgbuild_licenses(pkgbuild);
+	assert_string_equal(array[0], "GPL");
+	array = pkgbuild_sources(pkgbuild);
+	assert_string_equal(array[0],
+		"ftp://ftp.gnu.org/gnu/patch/patch-2.5.4.tar.gz");
+
+	pkgbuild_release(pkgbuild);
+}
