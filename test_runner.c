@@ -24,8 +24,18 @@
 void test_unquote_simple_string(void **state);
 void test_unquote_subsequenctly_quoted(void **state);
 void test_parse_array(void **state);
+void test_symbol_new_retain_release(void **state);
+void test_symbol_name(void **state);
+void test_symbol_string(void **symbol);
+void test_symbol_array(void **symbol);
+void test_symbol_int(void **symbol);
+void test_table_new_retain_release(void **state);
+void test_table_insert_lookup_remove(void **state);
 void test_parse_pkgbuild_minimal(void **state);
 void test_parse_pkgbuild_arrays(void **state);
+
+void create_symbol(void **symbol);
+void release_symbol(void **symbol);
 
 int main()
 {
@@ -33,6 +43,16 @@ int main()
 		unit_test(test_unquote_simple_string),
 		unit_test(test_unquote_subsequenctly_quoted),
 		unit_test(test_parse_array),
+		unit_test(test_symbol_new_retain_release),
+		unit_test(test_symbol_name),
+		unit_test_setup_teardown(test_symbol_string, create_symbol,
+			release_symbol),
+		unit_test_setup_teardown(test_symbol_array, create_symbol,
+			release_symbol),
+		unit_test_setup_teardown(test_symbol_int, create_symbol,
+			release_symbol),
+		unit_test(test_table_new_retain_release),
+		unit_test(test_table_insert_lookup_remove),
 		unit_test(test_parse_pkgbuild_minimal),
 		unit_test(test_parse_pkgbuild_arrays),
 	};
