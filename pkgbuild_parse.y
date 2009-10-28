@@ -36,7 +36,7 @@
 
 	static void _handle_assignment(char *string);
 	static void _set_pkgbuild_fields_from_table(pkgbuild_t *pkgbuild, table_t *g_table);
-	static void _strsplit(char *string, char split_by, char **left, char **right);
+	static int _strsplit(char *string, char split_by, char **left, char **right);
 
 	/* TODO: Make these local somehow. */
 	table_t *g_table;
@@ -233,17 +233,24 @@ static void _set_pkgbuild_fields_from_table(pkgbuild_t *pkgbuild, table_t *table
 	}
 }
 
-static void _strsplit(char *string, char split_by, char **left, char **right)
+static int _strsplit(char *string, char split_by, char **left, char **right)
 {
 	char *str_ptr;
+	int result = 0;
 
-	string = strdup(string);
+	*left = NULL;
+	*right = NULL;
+
 	str_ptr = strchr(string, split_by);
-	*str_ptr = '\0';
-	*left = strdup(string);
-	str_ptr++;
-	*right = strdup(str_ptr);
-	free(string);
+	if(str_ptr != NULL) {
+		*left = malloc((str_ptr - string + 1) * sizeof(*left));
+		*left = strncpy(*left, string, str_ptr - string);
+		(*left)[str_ptr - string] = '\0';
+		*right = strdup(str_ptr + 1);
+		result = 1;
+	}
+
+	return result;
 }
 
 static void _handle_assignment(char *string)
