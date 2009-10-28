@@ -19,8 +19,25 @@
  * SOFTWARE.
  */
 
-#ifndef SH_UTILITY_H
-#define SH_UTILITY_H
+#ifndef UTILITY_H
+#define UTILITY_H
+
+/** Split \c string into two strings, separated by \split_by
+ *
+ * The string \string shall be split using \c split_by, resulting in the left
+ * part being stored in \c left and the right part in \c right. If the \c
+ * split_by character is not found, \c left and \c right will be NULL and 0
+ * will be returned.
+ *
+ * The resulting strings \c left and \c right must be freed by the user.
+ *
+ * @param string the source string, to be split
+ * @param split_by the separator character
+ * @param left the address at which the left part shall be allocated
+ * @param right the address at which the right part shall be allocated
+ * @return 1 on success, 0 if \c split_by was not found.
+ */
+int strsplit(char *string, char split_by, char **left, char **right);
 
 /** Parse a bash array into a string array
  *

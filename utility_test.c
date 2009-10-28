@@ -23,7 +23,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "sh_utility.h"
+#include "utility.h"
 
 void test_unquote_simple_string(void **state)
 {
@@ -52,7 +52,7 @@ void test_parse_array(void **state)
 	assert_string_equal(parsed[2], "spam");
 	assert_string_equal(parsed[4], "ham");
 	free(parsed[0]);
-	free(parsed[1]);	
+	free(parsed[1]);
 	free(parsed[2]);
 	free(parsed[3]);
 	free(parsed[4]);

@@ -26,7 +26,7 @@
 	#include "pkgbuild.h"
 	#include "pkgbuild_private.h"
 	#include "symbol.h"
-	#include "sh_utility.h"
+	#include "utility.h"
 
 	#define YYSTYPE char *
 
@@ -36,7 +36,6 @@
 
 	static void _handle_assignment(char *string);
 	static void _set_pkgbuild_fields_from_table(pkgbuild_t *pkgbuild, table_t *g_table);
-	static int _strsplit(char *string, char split_by, char **left, char **right);
 
 	/* TODO: Make these local somehow. */
 	table_t *g_table;
@@ -233,26 +232,6 @@ static void _set_pkgbuild_fields_from_table(pkgbuild_t *pkgbuild, table_t *table
 	}
 }
 
-static int _strsplit(char *string, char split_by, char **left, char **right)
-{
-	char *str_ptr;
-	int result = 0;
-
-	*left = NULL;
-	*right = NULL;
-
-	str_ptr = strchr(string, split_by);
-	if(str_ptr != NULL) {
-		*left = malloc((str_ptr - string + 1) * sizeof(*left));
-		*left = strncpy(*left, string, str_ptr - string);
-		(*left)[str_ptr - string] = '\0';
-		*right = strdup(str_ptr + 1);
-		result = 1;
-	}
-
-	return result;
-}
-
 static void _handle_assignment(char *string)
 {
 	symbol_t *symbol;
@@ -263,7 +242,7 @@ static void _handle_assignment(char *string)
 	char **array_ptr;
 
 	/* We are guaranteed to find an equals sign */
-	_strsplit(string, '=', &lvalue, &rvalue);
+	strsplit(string, '=', &lvalue, &rvalue);
 
 	symbol = symbol_new(lvalue);
 

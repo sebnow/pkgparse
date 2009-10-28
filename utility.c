@@ -23,7 +23,27 @@
 #include <string.h>
 #include <ctype.h>
 
-#include "sh_utility.h"
+#include "utility.h"
+
+int strsplit(char *string, char split_by, char **left, char **right)
+{
+	char *str_ptr;
+	int result = 0;
+
+	*left = NULL;
+	*right = NULL;
+
+	str_ptr = strchr(string, split_by);
+	if(str_ptr != NULL) {
+		*left = malloc((str_ptr - string + 1) * sizeof(*left));
+		*left = strncpy(*left, string, str_ptr - string);
+		(*left)[str_ptr - string] = '\0';
+		*right = strdup(str_ptr + 1);
+		result = 1;
+	}
+
+	return result;
+}
 
 static size_t _array_size(const char *array)
 {
