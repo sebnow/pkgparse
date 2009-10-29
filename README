@@ -1,0 +1,41 @@
+Introduction
+============
+
+The pkgparse library parses [PKGBUILD] files. These files hold metadata and
+build instructions for making ALPM packages. The format originated from the
+[Archlinux] distribution. These files are simply bash scripts, with
+specifically named variables. The pkgparse library extracts the values of
+these variables and enables access to them.
+
+
+Requirements
+============
+
+* Yacc
+* Lex
+
+
+Install
+=======
+
+From the command line, in the root directory of the project:
+
+	make prefix=/usr         # As user
+	make prefix=/usr install # As root
+
+
+Issues
+======
+
+Please send bug reports or feature requests to the [Issue tracker][issues].
+
+
+License
+=======
+
+The pkgparse library is released under the [MIT License](LICENSE).
+
+[archlinux]: http://www.archlinux.org/
+[github]: http://www.github.com/
+[issues]: http://github.com/sebnow/pkgparse/issues
+[pkgbuild]: http://www.archlinux.org/pacman/PKGBUILD.5.html
