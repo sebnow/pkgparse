@@ -50,9 +50,7 @@ int strsplit(char *string, char split_by, char **left, char **right)
 
 	str_ptr = strchr(string, split_by);
 	if(str_ptr != NULL) {
-		*left = malloc((str_ptr - string + 1) * sizeof(*left));
-		*left = strncpy(*left, string, str_ptr - string);
-		(*left)[str_ptr - string] = '\0';
+		*left = _strcpy_partial(string, string, str_ptr - 1);
 		*right = strdup(str_ptr + 1);
 		result = 1;
 	}
