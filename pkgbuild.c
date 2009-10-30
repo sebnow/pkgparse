@@ -22,7 +22,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "pkgbuild.h"
+#include "pkgparse.h"
 #include "pkgbuild_private.h"
 
 static void _free_array(char **array)

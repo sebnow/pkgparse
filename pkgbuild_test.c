@@ -23,7 +23,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "pkgbuild.h"
+#include "pkgparse.h"
 
 void test_parse_pkgbuild_minimal(void **state)
 {

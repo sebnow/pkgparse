@@ -23,7 +23,7 @@
 	#include <stdlib.h>
 	#include <string.h>
 
-	#include "pkgbuild.h"
+	#include "pkgparse.h"
 	#include "pkgbuild_private.h"
 	#include "symbol.h"
 	#include "utility.h"
