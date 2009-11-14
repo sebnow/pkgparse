@@ -136,3 +136,25 @@ void test_table_insert_lookup_remove(void **state)
 	
 	table_release(table);
 }
+
+void test_table_lookup_recursive(void **state)
+{
+	table_t *parent, *table;
+	symbol_t *symbol;
+
+	parent = table_new();
+	symbol = symbol_new("ham");
+	symbol_set_string(symbol, "eggs");
+	table_insert(parent, symbol);
+	symbol_release(symbol);
+
+	table = table_new_with_parent(parent);
+	symbol = symbol_retain(table_lookupr(table, "ham"));
+
+	table_release(table);
+	table_release(parent);
+
+	assert_true(symbol != NULL);
+	assert_string_equal(symbol_string(symbol), "eggs");
+	symbol_release(symbol);
+}

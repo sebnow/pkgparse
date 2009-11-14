@@ -33,14 +33,21 @@ static void _table_free(table_t *table)
 			symbol_release(table->symbols[i]);
 		}
 	}
+	table_release(table->parent);
 	free(table);
 }
 
 table_t *table_new()
 {
+	return table_new_with_parent(NULL);
+}
+
+table_t *table_new_with_parent(table_t *parent)
+{
 	table_t *table;
 	table = malloc(sizeof(*table));
 	table = memset(table, 0, sizeof(*table));
+	table->parent = table_retain(parent);
 	return table_retain(table);
 }
 
@@ -62,7 +69,7 @@ void table_release(table_t *table)
 	}
 }
 
-symbol_t *table_lookup(table_t *table, char *lvalue)
+static symbol_t *_table_lookup(table_t *table, char *lvalue, int recurse)
 {
 	symbol_t *symbol = NULL;
 	int found = 0;
@@ -73,7 +80,23 @@ symbol_t *table_lookup(table_t *table, char *lvalue)
 			found = 1;
 		}
 	}
+
+	/* Lookup in parent, if symbol not found */
+	if(recurse && !found && table_parent(table) != NULL) {
+		symbol = _table_lookup(table_parent(table), lvalue, recurse);
+	}
+
 	return symbol;
+}
+
+symbol_t *table_lookup(table_t *table, char *lvalue)
+{
+	return _table_lookup(table, lvalue, 0);
+}
+
+symbol_t *table_lookupr(table_t *table, char *lvalue)
+{
+	return _table_lookup(table, lvalue, 1);
 }
 
 int table_insert(table_t *table, symbol_t *symbol)
@@ -101,6 +124,15 @@ int table_remove(table_t *table, char *lvalue)
 		}
 	}
 	return 0;
+}
+
+table_t *table_parent(table_t *table)
+{
+	table_t *parent = NULL;
+	if(table != NULL) {
+		parent = table->parent;
+	}
+	return parent;
 }
 
 static void _symbol_free(symbol_t *symbol)
@@ -189,6 +221,15 @@ void symbol_set_array(symbol_t *symbol, char **rvalue)
 	}
 }
 
+void symbol_set_function(symbol_t *symbol, table_t *rvalue)
+{
+	if(symbol != NULL) {
+		symbol->type = kSymbolTypeFunction;
+		table_release(symbol->rvalue.function);
+		symbol->rvalue.function = table_retain(rvalue);
+	}
+}
+
 char *symbol_name(symbol_t *symbol)
 {
 	return symbol->lvalue;
@@ -228,4 +269,13 @@ char **symbol_array(symbol_t *symbol)
 		array = symbol->rvalue.array;
 	}
 	return array;
+}
+
+table_t *symbol_function(symbol_t *symbol)
+{
+	table_t *function;
+	if(symbol != NULL && symbol->type == kSymbolTypeFunction) {
+		function = symbol->rvalue.function;
+	}
+	return function;
 }

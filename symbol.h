@@ -26,6 +26,7 @@ typedef enum {
 	kSymbolTypeInteger,
 	kSymbolTypeString,
 	kSymbolTypeArray,
+	kSymbolTypeFunction,
 } symbol_type_t;
 
 typedef struct _table_t table_t;
@@ -38,19 +39,34 @@ void symbol_release(symbol_t *symbol);
 void symbol_set_integer(symbol_t *symbol, int rvalue);
 void symbol_set_string(symbol_t *symbol, char *rvalue);
 void symbol_set_array(symbol_t *symbol, char **rvalue);
+void symbol_set_function(symbol_t *symbol, table_t *table);
 
 char *symbol_name(symbol_t *symbol);
 symbol_type_t symbol_type(symbol_t *symbol);
 int symbol_integer(symbol_t *symbol);
 char *symbol_string(symbol_t *symbol);
 char **symbol_array(symbol_t *symbol);
+table_t *symbol_function(symbol_t *symbol);
 
 table_t *table_new();
+table_t *table_new_with_parent(table_t *parent);
 table_t *table_retain(table_t *table);
 void table_release(table_t *table);
 
 symbol_t *table_lookup(table_t *table, char *lvalue);
+
+/** Lookup a symbol recursively
+ *
+ * Table \a table will be searched for the symbol \a lvalue, if it's not
+ * found, it will be searched in its parent table, and so on.
+ *
+ * @param table The table to be searched
+ * @param lvalue Name of the symbol to be found
+ * @return A symbol with its lvalue \a lvalue
+ */
+symbol_t *table_lookupr(table_t *table, char *lvalue);
 int table_insert(table_t *table, symbol_t *symbol);
 int table_remove(table_t *table, char *lvalue);
+table_t *table_parent(table_t *table);
 
 #endif

@@ -35,7 +35,10 @@
 	extern int line;
 
 	static void _handle_assignment(char *string);
+	static void _set_splitpkgs_from_table(pkgbuild_t *pkgbuild, table_t *table);
 	static void _set_pkgbuild_fields_from_table(pkgbuild_t *pkgbuild, table_t *g_table);
+	static void _enter_function(char *name);
+	static void _exit_function();
 
 	/* TODO: Make these local somehow. */
 	table_t *g_table;
@@ -78,10 +81,12 @@ else_part: ELIF compound_list THEN else_part
 	| ELSE compound_list
 	;
 
-function_definition : NAME '(' ')' whitespace linebreak function_body
+function_declaration : NAME '(' ')' { _enter_function($1); free($1); }
+
+function_definition : function_declaration whitespace linebreak function_body
 	;
 
-function_body: compound_command
+function_body: compound_command { _exit_function(); }
 	;
 
 brace_group: '{' compound_list '}'
@@ -106,13 +111,72 @@ whitespace: whitespace ' '
 
 %%
 
+static void _set_splitpkgs_from_table(pkgbuild_t *pkgbuild, table_t *table)
+{
+	#define FNAME_LENTH 32
+	int i;
+	size_t size = 0;
+	symbol_t *symbol;
+	pkgbuild_t **splitpkgs;
+	char *ptr;
+	char **names;
+	char function_name[FNAME_LENTH] = {'\0'};
+	const char *function_prefix = "package_";
+
+	if(pkgbuild == NULL) {
+		return;
+	}
+
+	ptr = function_name;
+	names = pkgbuild_names(pkgbuild);
+	if(names == NULL) {
+		return;
+	}
+	for(i = 0; names[i] != NULL; i++) {
+		size++;
+	}
+
+	splitpkgs = malloc(sizeof(*splitpkgs) * (size + 1));
+	splitpkgs = memset(splitpkgs, 0, sizeof(*splitpkgs) * (size + 1));
+	splitpkgs[size] = NULL;
+
+	for(i = 0; names[i] != NULL; i++) {
+		ptr = strncat(ptr, function_prefix, FNAME_LENTH);
+		ptr = strncat(ptr, names[i], FNAME_LENTH);
+		symbol = symbol_retain(table_lookup(table, ptr));
+		ptr[0] = '\0';
+		if(symbol != NULL) {
+			splitpkgs[i] = pkgbuild_new();
+			_set_pkgbuild_fields_from_table(splitpkgs[i], symbol_function(symbol));
+		}
+		symbol_release(symbol);
+	}
+
+	pkgbuild_set_splitpkgs(pkgbuild, splitpkgs);
+}
+
 static void _set_pkgbuild_fields_from_table(pkgbuild_t *pkgbuild, table_t *table)
 {
 	symbol_t *symbol;
+	char **str_array = NULL;
+	table_retain(table);
 
 	symbol = table_lookup(table, "pkgname");
 	if(symbol != NULL) {
-		pkgbuild_set_name(pkgbuild, symbol_string(symbol));
+		if(symbol_type(symbol) == kSymbolTypeArray) {
+			pkgbuild_set_names(pkgbuild, symbol_array(symbol));
+		} else {
+			str_array = malloc(sizeof(*str_array) * 2);
+			str_array[0] = symbol_string(symbol);
+			str_array[1] = NULL;
+			pkgbuild_set_names(pkgbuild, str_array);
+			free(str_array);
+		}
+	}
+
+	symbol = table_lookup(table, "pkgbase");
+	if(symbol != NULL) {
+		pkgbuild_set_basename(pkgbuild, symbol_string(symbol));
 	}
 
 	symbol = table_lookup(table, "pkgver");
@@ -230,6 +294,9 @@ static void _set_pkgbuild_fields_from_table(pkgbuild_t *pkgbuild, table_t *table
 	if(symbol != NULL) {
 		pkgbuild_set_options(pkgbuild, symbol_array(symbol));
 	}
+
+	_set_splitpkgs_from_table(pkgbuild, table);
+	table_release(table);
 }
 
 static void _handle_assignment(char *string)
@@ -266,6 +333,30 @@ static void _handle_assignment(char *string)
 	free(rvalue);
 }
 
+static void _enter_function(char *name)
+{
+	table_t *table;
+	symbol_t *symbol;
+
+	table = table_new_with_parent(g_table);
+
+	symbol = symbol_new(name);
+	symbol_set_function(symbol, table);
+	table_insert(g_table, symbol);
+
+	table_release(g_table);
+	g_table = table;
+}
+
+static void _exit_function()
+{
+	table_t *table;
+
+	table = table_retain(table_parent(g_table));
+	table_release(g_table);
+	g_table = table;
+
+}
 
 pkgbuild_t *pkgbuild_parse(FILE *fp)
 {

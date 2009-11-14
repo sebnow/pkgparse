@@ -30,7 +30,8 @@ pkgbuild_t *pkgbuild_parse(FILE *fp);
 void pkgbuild_release(pkgbuild_t *pkgbuild);
 pkgbuild_t *pkgbuild_retain(pkgbuild_t *pkgbuild);
 
-char *pkgbuild_name(pkgbuild_t *pkgbuild);
+char **pkgbuild_names(pkgbuild_t *pkgbuild);
+char *pkgbuild_basename(pkgbuild_t *pkgbuild);
 char *pkgbuild_version(pkgbuild_t *pkgbuild);
 float pkgbuild_rel(pkgbuild_t *pkgbuild);
 char *pkgbuild_desc(pkgbuild_t *pkgbuild);
@@ -54,5 +55,6 @@ char **pkgbuild_conflicts(pkgbuild_t *pkgbuild);
 char **pkgbuild_provides(pkgbuild_t *pkgbuild);
 char **pkgbuild_replaces(pkgbuild_t *pkgbuild);
 char **pkgbuild_options(pkgbuild_t *pkgbuild);
+pkgbuild_t **pkgbuild_splitpkgs(pkgbuild_t *pkgbuild);
 
 #endif

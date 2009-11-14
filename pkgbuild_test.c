@@ -40,7 +40,7 @@ void test_parse_pkgbuild_minimal(void **state)
 	pkgbuild = pkgbuild_parse(fp);
 	fclose(fp);
 
-	assert_string_equal(pkgbuild_name(pkgbuild), "foobar");
+	assert_string_equal(pkgbuild_names(pkgbuild)[0], "foobar");
 	assert_string_equal(pkgbuild_version(pkgbuild), "1.0");
 	assert_true(pkgbuild_rel(pkgbuild) == 1);
 	assert_string_equal(pkgbuild_desc(pkgbuild), "dummy package");
@@ -94,7 +94,7 @@ void test_parse_pkgbuild_simple(void **state)
 	pkgbuild = pkgbuild_parse(fp);
 	fclose(fp);
 
-	assert_string_equal(pkgbuild_name(pkgbuild), "patch");
+	assert_string_equal(pkgbuild_names(pkgbuild)[0], "patch");
 	assert_string_equal(pkgbuild_version(pkgbuild), "2.5.4");
 	assert_true(pkgbuild_rel(pkgbuild) == 3.0f);
 	array = pkgbuild_architectures(pkgbuild);
@@ -107,6 +107,47 @@ void test_parse_pkgbuild_simple(void **state)
 	array = pkgbuild_sources(pkgbuild);
 	assert_string_equal(array[0],
 		"ftp://ftp.gnu.org/gnu/patch/patch-2.5.4.tar.gz");
+
+	pkgbuild_release(pkgbuild);
+}
+
+void test_parse_pkgbuild_splitpkg(void **state)
+{
+	FILE *fp;
+	pkgbuild_t *pkgbuild;
+	pkgbuild_t **splitpkgs;
+	char **names;
+	int i;
+
+	fp = tmpfile();
+	fprintf(fp,
+		"pkgbase=foo\n"
+		"pkgname=(foo bar)\n"
+		"pkgver=1\n"
+		"pkgdesc=\"A foo\"\n"
+		"arch=('i686' 'x86_64')\n"
+		"license=('GPL')\n"
+		"package_foo() {\n"
+		"    pkgdesc=\"some foo\"\n"
+		"}\n"
+		"package_bar() {\n"
+		"    pkgver=0.7\n"
+		"    pkgdesc=\"a bar\"\n"
+		"}\n");
+	fseek(fp, 0, SEEK_SET);
+	pkgbuild = pkgbuild_parse(fp);
+	fclose(fp);
+
+	splitpkgs = pkgbuild_splitpkgs(pkgbuild);
+
+	assert_true(splitpkgs != NULL);
+	assert_true(splitpkgs[0] != NULL);
+	assert_true(splitpkgs[1] != NULL);
+	assert_string_equal(pkgbuild_basename(pkgbuild), "foo");
+	assert_string_equal(pkgbuild_names(pkgbuild)[0], "foo");
+	assert_string_equal(pkgbuild_names(pkgbuild)[1], "bar");
+	assert_string_equal(pkgbuild_desc(splitpkgs[0]), "some foo");
+	assert_string_equal(pkgbuild_desc(splitpkgs[1]), "a bar");
 
 	pkgbuild_release(pkgbuild);
 }

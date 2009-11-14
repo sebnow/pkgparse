@@ -24,7 +24,8 @@
 
 struct _pkgbuild_t {
 	unsigned int refcount;
-	char *name;
+	char *basename;
+	char **names;
 	char *version;
 	float rel;
 	char *desc;
@@ -48,11 +49,13 @@ struct _pkgbuild_t {
 	char **provides;
 	char **replaces;
 	char **options;
+	pkgbuild_t **splitpkgs;
 };
 
 pkgbuild_t *pkgbuild_new();
 
-void pkgbuild_set_name(struct _pkgbuild_t *pkgbuild, char *name);
+void pkgbuild_set_names(struct _pkgbuild_t *pkgbuild, char **names);
+void pkgbuild_set_basename(struct _pkgbuild_t *pkgbuild, char *basename);
 void pkgbuild_set_version(struct _pkgbuild_t *pkgbuild, char *version);
 void pkgbuild_set_rel(struct _pkgbuild_t *pkgbuild, float rel);
 void pkgbuild_set_desc(struct _pkgbuild_t *pkgbuild, char *desc);
@@ -75,5 +78,6 @@ void pkgbuild_set_conflicts(pkgbuild_t *pkgbuild, char **conflicts);
 void pkgbuild_set_provides(pkgbuild_t *pkgbuild, char **provides);
 void pkgbuild_set_replaces(pkgbuild_t *pkgbuild, char **replaces);
 void pkgbuild_set_options(pkgbuild_t *pkgbuild, char **options);
+void pkgbuild_set_splitpkgs(pkgbuild_t *pkgbuild, pkgbuild_t **splitpkgs);
 
 #endif

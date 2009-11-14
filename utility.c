@@ -28,6 +28,7 @@
 static char *_strcpy_partial(char *string, char *start, char *end);
 static int _find_next_substitution(char *string, char **start, char **end);
 static char *_substitute_words(table_t *table, char *string);
+static char *_array_cat(char **array);
 
 static char *_strcpy_partial(char *string, char *start, char *end)
 {
@@ -39,6 +40,33 @@ static char *_strcpy_partial(char *string, char *start, char *end)
 	result[len] = '\0';
 	return result;
 }
+
+static char *_array_cat(char **array)
+{
+	char *result = NULL;
+	size_t size = 0;
+	int i;
+
+	if(array == NULL || array[0] == NULL) {
+		return result;
+	}
+
+	for(i = 0; array[i] != NULL; i++) {
+		size += strlen(array[i]);
+	}
+	size += i - 1; /* spaces between elements */
+	result = malloc(sizeof(*result) * (size + 1));
+	result[size] = '\0';
+
+	for(i = 0; array[i] != NULL; i++) {
+		result = strncat(result, array[i], size);
+		if(array[i + 1] != NULL) {
+			result = strncat(result, " ", size);
+		}
+	}
+	return result;
+}
+
 
 int strsplit(char *string, char split_by, char **left, char **right)
 {
@@ -188,6 +216,10 @@ char *sh_unquote(char *string)
 	char *str_ptr = string;
 	char *return_string = NULL;
 
+	if(string == NULL) {
+		return NULL;
+	}
+
 	if(*str_ptr == '\'' || *str_ptr == '"') {
 		str_ptr++;
 		len = strlen(str_ptr);
@@ -265,6 +297,8 @@ static char *_substitute_words(table_t *table, char *string)
 	char *end = NULL;
 	char *word = NULL;
 	char *result = NULL;
+	char *value = NULL;
+	int free_value = 0;
 	symbol_t *symbol = NULL;
 
 	if(!_find_next_substitution(str_ptr, &start, &end)) {
@@ -283,18 +317,29 @@ static char *_substitute_words(table_t *table, char *string)
 		} else {
 			word = _strcpy_partial(start + 1, start + 1, end);
 		}
-		symbol = table_lookup(table, word);
+		symbol = table_lookupr(table, word);
 		free(word);
 
 		if(symbol != NULL) {
-			len = strlen(symbol_string(symbol));
+			if(symbol_type(symbol) == kSymbolTypeArray) {
+				value = _array_cat(symbol_array(symbol));
+				free_value = 1;
+			} else {
+				value = symbol_string(symbol);
+			}
+			len = strlen(value);
 			result_len += start - str_ptr + len;
 			result = realloc(result, result_len * sizeof(*result));
 			/* Concatenate the string preceeding substitution */
 			result = strncat(result, str_ptr, (start - str_ptr) * sizeof(*result));
-			result = strncat(result, symbol_string(symbol), len);
+			result = strncat(result, value, len);
+			if(free_value) {
+				free(value);
+				free_value = 0;
+				value = NULL;
+			}
 		}
-		
+
 		str_ptr = end + 1;
 	}
 

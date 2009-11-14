@@ -8,6 +8,7 @@
 struct _table_t {
 	unsigned int refcount;
 	symbol_t *symbols[TABLE_SIZE];
+	table_t *parent;
 };
 
 struct _symbol_t {
@@ -18,6 +19,7 @@ struct _symbol_t {
 		int intval;
 		char *strval;
 		char **array; /* NULL terminated */
+		table_t *function;
 	} rvalue;
 };
 

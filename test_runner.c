@@ -33,10 +33,12 @@ void test_symbol_array(void **symbol);
 void test_symbol_int(void **symbol);
 void test_table_new_retain_release(void **state);
 void test_table_insert_lookup_remove(void **state);
+void test_table_lookup_recursive(void **state);
 void test_sh_parse_array_simple_expanded(void **table);
 void test_parse_pkgbuild_minimal(void **state);
 void test_parse_pkgbuild_arrays(void **state);
 void test_parse_pkgbuild_simple(void **state);
+void test_parse_pkgbuild_splitpkg(void **state);
 
 void create_symbol(void **symbol);
 void release_symbol(void **symbol);
@@ -60,11 +62,13 @@ int main()
 			release_symbol),
 		unit_test(test_table_new_retain_release),
 		unit_test(test_table_insert_lookup_remove),
+		unit_test(test_table_lookup_recursive),
 		unit_test_setup_teardown(test_sh_parse_array_simple_expanded,
 			create_table, release_table),
 		unit_test(test_parse_pkgbuild_minimal),
 		unit_test(test_parse_pkgbuild_arrays),
 		unit_test(test_parse_pkgbuild_simple),
+		unit_test(test_parse_pkgbuild_splitpkg),
 	};
 	return run_tests(tests);
 }

@@ -48,7 +48,10 @@
 	return ASSIGNMENT_WORD;
 }
 
-[a-zA-Z_][a-zA-Z0-9_]* { return NAME; }
+[a-zA-Z_][a-zA-Z0-9_]* {
+	yylval = strdup(yytext);
+	return NAME;
+}
 
 "\n" { line++; return NEWLINE; }
 

@@ -37,6 +37,17 @@ static void _free_array(char **array)
 	}
 }
 
+static void _free_splitpkgs(pkgbuild_t **splitpkgs)
+{
+	int i;
+	if(splitpkgs != NULL) {
+		for(i = 0; splitpkgs[i] != NULL; i++) {
+			pkgbuild_release(splitpkgs[i]);
+		}
+		free(splitpkgs);
+	}
+}
+
 /**
 * @brief Free a pkgbuild_t structure
 *
@@ -46,7 +57,8 @@ static void _free_array(char **array)
 */
 static void _pkgbuild_free(pkgbuild_t *pkgbuild)
 {
-	free(pkgbuild->name);
+	free(pkgbuild->basename);
+	_free_array(pkgbuild->names);
 	free(pkgbuild->version);
 	free(pkgbuild->desc);
 	free(pkgbuild->url);
@@ -69,6 +81,7 @@ static void _pkgbuild_free(pkgbuild_t *pkgbuild)
 	_free_array(pkgbuild->provides);
 	_free_array(pkgbuild->replaces);
 	_free_array(pkgbuild->options);
+	_free_splitpkgs(pkgbuild->splitpkgs);
 	free(pkgbuild);
 }
 
@@ -111,6 +124,41 @@ float pkgbuild_rel(pkgbuild_t *pkgbuild) {
 		rel = pkgbuild->rel;
 	}
 	return rel;
+}
+
+void pkgbuild_set_basename(struct _pkgbuild_t *pkgbuild, char *basename)
+{
+	if(pkgbuild != NULL) {
+		pkgbuild->basename = strdup(basename);
+	}
+}
+
+char *pkgbuild_basename(pkgbuild_t *pkgbuild) {
+	char *basename = NULL;
+	if(pkgbuild != NULL) {
+		if(pkgbuild->basename != NULL) {
+			basename = pkgbuild->basename;
+		} else {
+			basename = pkgbuild->names[0];
+		}
+	}
+	return basename;
+}
+
+pkgbuild_t **pkgbuild_splitpkgs(pkgbuild_t *pkgbuild)
+{
+	pkgbuild_t **splitpkgs = NULL;
+	if(pkgbuild != NULL) {
+		splitpkgs = pkgbuild->splitpkgs;
+	}
+	return splitpkgs;
+}
+
+void pkgbuild_set_splitpkgs(struct _pkgbuild_t *pkgbuild, pkgbuild_t **splitpkgs)
+{
+	if(pkgbuild != NULL) {
+		pkgbuild->splitpkgs = splitpkgs;
+	}
 }
 
 /* Some preprocessing magic to get rid of code duplication. The macros below
@@ -174,7 +222,7 @@ void object ## _set_ ## field(struct _ ## object ## _t *object, char **field) \
 	MK_ARRAY_GETTER(object, field)
 
 
-MK_STRING_PROPERTY(pkgbuild, name)
+MK_ARRAY_PROPERTY(pkgbuild, names)
 MK_STRING_PROPERTY(pkgbuild, version)
 MK_STRING_PROPERTY(pkgbuild, desc)
 MK_STRING_PROPERTY(pkgbuild, url)
