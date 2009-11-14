@@ -40,9 +40,8 @@
 	static void _enter_function(char *name);
 	static void _exit_function();
 
-	/* TODO: Make these local somehow. */
+	/* TODO: Make this local somehow. */
 	table_t *g_table;
-	pkgbuild_t *g_pkgbuild;
 %}
 
 %token NAME
