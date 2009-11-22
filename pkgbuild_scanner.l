@@ -24,7 +24,7 @@
 	#include <string.h>
 
 	#define YYSTYPE char *
-	#include "y.tab.h"
+	#include "pkgbuild_parse.h"
 
 	extern YYSTYPE yylval;
 	extern int yyleng;

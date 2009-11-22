@@ -13,6 +13,7 @@ Requirements
 
 * Yacc
 * Lex
+* CMake >= 2.8
 
 
 Install
@@ -20,8 +21,8 @@ Install
 
 From the command line, in the root directory of the project:
 
-	make prefix=/usr         # As user
-	make prefix=/usr install # As root
+	cmake .
+	make
 
 
 Issues

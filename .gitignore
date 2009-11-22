@@ -1,6 +1,10 @@
 *.o
-test
-lex.yy.c
-y.tab.c
-y.tab.h
+test_runner
+cmake_install.cmake
+CMakeCache.txt
+CMakeFiles/
+Makefile
+pkgbuild_scanner.c
+pkgbuild_parse.c
+pkgbuild_parse.h
 
