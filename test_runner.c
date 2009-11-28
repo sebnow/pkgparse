@@ -21,11 +21,9 @@
 
 #include "cmockery.h"
 
-void test_strsplit(void **state);
 void test_unquote_simple_string(void **state);
 void test_unquote_subsequenctly_quoted(void **state);
 void test_split_array(void **state);
-void test_strsplit(void **state);
 void test_symbol_new_retain_release(void **state);
 void test_symbol_name(void **state);
 void test_symbol_string(void **symbol);
@@ -49,7 +47,6 @@ int main()
 {
 	const UnitTest tests[] = {
 		unit_test(test_unquote_simple_string),
-		unit_test(test_strsplit),
 		unit_test(test_unquote_subsequenctly_quoted),
 		unit_test(test_split_array),
 		unit_test(test_symbol_new_retain_release),

@@ -64,43 +64,6 @@ void release_table(void **table)
 	table_release(*table);
 }
 
-void test_strsplit(void **state)
-{
-	char *string1 = "foo=bar";
-	char *string2 = "=foobar";
-	char *string3 = "foobar=";
-	char *string4 = "foobar";
-	char *left;
-	char *right;
-	int success;
-
-	success = strsplit(string1, '=', &left, &right);
-	assert_true(success);
-	assert_string_equal(left, "foo");
-	assert_string_equal(right, "bar");
-	free(left);
-	free(right);
-
-	success = strsplit(string2, '=', &left, &right);
-	assert_true(success);
-	assert_string_equal(left, "");
-	assert_string_equal(right, "foobar");
-	free(left);
-	free(right);
-
-	success = strsplit(string3, '=', &left, &right);
-	assert_true(success);
-	assert_string_equal(left, "foobar");
-	assert_string_equal(right, "");
-	free(left);
-	free(right);
-
-	success = strsplit(string4, '=', &left, &right);
-	assert_true(!success);
-	assert_true(left == NULL);
-	assert_true(right == NULL);
-}
-
 void test_unquote_simple_string(void **state)
 {
 	char string[] = "\"foo bar spam eggs ham\"";

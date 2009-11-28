@@ -43,9 +43,9 @@
 "elif" { return ELIF; }
 "fi" { return FI; }
 
-[a-zA-Z_][a-zA-Z0-9_]*=[^#\n]* {
-	yylval = strdup(yytext);
-	return ASSIGNMENT_WORD;
+=[^#\n]* {
+	yylval = strdup(yytext + 1);
+	return ASSIGNMENT;
 }
 
 [a-zA-Z_][a-zA-Z0-9_-]* {

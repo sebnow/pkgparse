@@ -34,7 +34,7 @@
 	extern int yydebug;
 	extern int line;
 
-	static void _handle_assignment(char *string);
+	static void _handle_assignment(char *lvalue, char *rvalue);
 	static void _set_splitpkgs_from_table(pkgbuild_t *pkgbuild, table_t *table);
 	static void _set_pkgbuild_fields_from_table(pkgbuild_t *pkgbuild, table_t *g_table);
 	static void _enter_function(char *name);
@@ -46,7 +46,7 @@
 
 %token NAME
 %token NEWLINE
-%token ASSIGNMENT_WORD
+%token ASSIGNMENT
 %token IF THEN ELSE ELIF FI
 
 %start compound_list
@@ -57,7 +57,7 @@ compound_command: brace_group
 	| if_clause
 	;
 
-command: ASSIGNMENT_WORD { _handle_assignment($1); free($1); }
+command: NAME ASSIGNMENT { _handle_assignment($1, $2); free($1); free($2); }
 	| compound_command
 	| function_definition
 	;
@@ -298,17 +298,12 @@ static void _set_pkgbuild_fields_from_table(pkgbuild_t *pkgbuild, table_t *table
 	table_release(table);
 }
 
-static void _handle_assignment(char *string)
+static void _handle_assignment(char *lvalue, char *rvalue)
 {
 	symbol_t *symbol;
-	char *lvalue;
-	char *rvalue;
 	char *str;
 	char **array;
 	char **array_ptr;
-
-	/* We are guaranteed to find an equals sign */
-	strsplit(string, '=', &lvalue, &rvalue);
 
 	symbol = symbol_new(lvalue);
 	/* Are we assigning an array or string? */
@@ -328,8 +323,6 @@ static void _handle_assignment(char *string)
 	}
 	table_insert(g_table, symbol);
 	symbol_release(symbol);
-	free(lvalue);
-	free(rvalue);
 }
 
 static void _enter_function(char *name)

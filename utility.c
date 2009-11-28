@@ -67,25 +67,6 @@ static char *_array_cat(char **array)
 	return result;
 }
 
-
-int strsplit(char *string, char split_by, char **left, char **right)
-{
-	char *str_ptr;
-	int result = 0;
-
-	*left = NULL;
-	*right = NULL;
-
-	str_ptr = strchr(string, split_by);
-	if(str_ptr != NULL) {
-		*left = _strcpy_partial(string, string, str_ptr - 1);
-		*right = strdup(str_ptr + 1);
-		result = 1;
-	}
-
-	return result;
-}
-
 static size_t _array_size(const char *array)
 {
 	const char *str_ptr = array;
