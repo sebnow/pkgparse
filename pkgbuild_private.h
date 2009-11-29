@@ -52,6 +52,12 @@ struct _pkgbuild_t {
 	pkgbuild_t **splitpkgs;
 };
 
+typedef struct {
+	table_t *global_namespace;
+	table_t *namespace;
+	symbol_t *symbol;
+} parser_state_t;
+
 pkgbuild_t *pkgbuild_new();
 
 void pkgbuild_set_names(struct _pkgbuild_t *pkgbuild, char **names);

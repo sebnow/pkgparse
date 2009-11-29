@@ -92,6 +92,27 @@ pkgbuild_t *pkgbuild_new()
 	return pkgbuild_retain(pkgbuild);
 }
 
+pkgbuild_t *pkgbuild_parse(FILE *fp)
+{
+	pkgbuild_t *pkgbuild = NULL;
+	scanner_t *scanner;
+	parser_state_t state;
+	token_t token;
+	void *parser;
+
+	if(fp != NULL) {
+		pkgbuild = pkgbuild_new();
+		parser = ParseAlloc(malloc);
+		scanner = scanner_new_with_file(fp);
+		while(scanner_next_token(scanner, &token)) {
+			Parse(parser, token.id, token.value, &state);
+		}
+		scanner_release(scanner);
+		ParseFree(parser, free);
+	}
+	return pkgbuild;
+}
+
 void pkgbuild_release(pkgbuild_t *pkgbuild)
 {
 	if(pkgbuild != NULL) {

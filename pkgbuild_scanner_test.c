@@ -19,51 +19,26 @@
  * SOFTWARE.
  */
 
-%{
-	#include <stdio.h>
-	#include <string.h>
+#include "cmockery.h"
 
-	#define YYSTYPE char *
-	#include "pkgbuild_parse.h"
+#include "pkgbuild_scanner.h"
+#include "pkgbuild_parse.h"
 
-	extern YYSTYPE yylval;
-	extern int yyleng;
-
-	int line = 1;
-%}
-
-%%
-
-"#"[^\n]*"\n" ;
-^[\t ]+ ;
-
-"if [" { return IF; }
-"then" { return THEN; }
-"else" { return ELSE; }
-"elif" { return ELIF; }
-"fi" { return FI; }
-
-=[^#\n]* {
-	yylval = strdup(yytext + 1);
-	return ASSIGNMENT;
-}
-
-[a-zA-Z_][a-zA-Z0-9_-]* {
-	yylval = strdup(yytext);
-	return NAME;
-}
-
-"\n" { line++; return NEWLINE; }
-
-. { return yytext[0]; }
-
-%%
-
-void yyerror(char *msg)
+void test_scan_simple(void **state)
 {
-	fprintf(stderr, "ERROR:%d: %s\n", line, msg);
+	/* This string should lex to NAME EQUAL VALUE('bar') */
+	const char *const string = "foo='bar'";
+	scanner_t *scanner;
+	token_t token;
+
+	scanner = scanner_new_with_string(string);
+	assert_true(scanner_next_token(scanner, &token));
+	assert_true(token.id == TOKEN_NAME);
+	assert_true(scanner_next_token(scanner, &token));
+	assert_true(token.id == TOKEN_EQUAL);
+	assert_true(scanner_next_token(scanner, &token));
+	assert_true(token.id == TOKEN_VALUE);
+	assert_string_equal(token.value, "'bar'");
+	assert_false(scanner_next_token(scanner, &token));
 }
 
-int yywrap() {
-	return 1;
-}
