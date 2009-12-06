@@ -23,7 +23,6 @@
 #define SYMBOL_H
 
 typedef enum {
-	kSymbolTypeInteger,
 	kSymbolTypeString,
 	kSymbolTypeArray,
 	kSymbolTypeFunction,
@@ -36,14 +35,12 @@ symbol_t *symbol_new(char *lvalue);
 symbol_t *symbol_retain(symbol_t *symbol);
 void symbol_release(symbol_t *symbol);
 
-void symbol_set_integer(symbol_t *symbol, int rvalue);
 void symbol_set_string(symbol_t *symbol, char *rvalue);
 void symbol_set_array(symbol_t *symbol, char **rvalue);
 void symbol_set_function(symbol_t *symbol, table_t *table);
 
 char *symbol_name(symbol_t *symbol);
 symbol_type_t symbol_type(symbol_t *symbol);
-int symbol_integer(symbol_t *symbol);
 char *symbol_string(symbol_t *symbol);
 char **symbol_array(symbol_t *symbol);
 table_t *symbol_function(symbol_t *symbol);

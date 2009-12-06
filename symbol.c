@@ -183,14 +183,6 @@ void symbol_release(symbol_t *symbol)
 	}
 }
 
-void symbol_set_integer(symbol_t *symbol, int rvalue)
-{
-	if(symbol != NULL) {
-		symbol->type = kSymbolTypeInteger;
-		symbol->rvalue.intval = rvalue;
-	}
-}
-
 void symbol_set_string(symbol_t *symbol, char *rvalue)
 {
 	if(symbol != NULL) {
@@ -242,15 +234,6 @@ symbol_type_t symbol_type(symbol_t *symbol)
 		type = symbol->type;
 	}
 	return type;
-}
-
-int symbol_integer(symbol_t *symbol)
-{
-	int number = 0;
-	if(symbol != NULL && symbol->type == kSymbolTypeInteger) {
-		number = symbol->rvalue.intval;
-	}
-	return number;
 }
 
 char *symbol_string(symbol_t *symbol)

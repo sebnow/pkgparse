@@ -76,12 +76,6 @@ void test_symbol_array(void **symbol)
 	assert_string_equal(ptr[4], "ham");
 }
 
-void test_symbol_int(void **symbol)
-{
-	symbol_set_integer(*symbol, 42);
-	assert_true(symbol_integer(*symbol) == 42);
-}
-
 void test_table_new_retain_release(void **state)
 {
 	table_t *table;

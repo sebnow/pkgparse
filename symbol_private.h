@@ -16,7 +16,6 @@ struct _symbol_t {
 	char *lvalue;
 	symbol_type_t type;
 	union value {
-		int intval;
 		char *strval;
 		char **array; /* NULL terminated */
 		table_t *function;

@@ -28,7 +28,6 @@ void test_symbol_new_retain_release(void **state);
 void test_symbol_name(void **state);
 void test_symbol_string(void **symbol);
 void test_symbol_array(void **symbol);
-void test_symbol_int(void **symbol);
 void test_table_new_retain_release(void **state);
 void test_table_insert_lookup_remove(void **state);
 void test_table_lookup_recursive(void **state);
@@ -54,8 +53,6 @@ int main()
 		unit_test_setup_teardown(test_symbol_string, create_symbol,
 			release_symbol),
 		unit_test_setup_teardown(test_symbol_array, create_symbol,
-			release_symbol),
-		unit_test_setup_teardown(test_symbol_int, create_symbol,
 			release_symbol),
 		unit_test(test_table_new_retain_release),
 		unit_test(test_table_insert_lookup_remove),
