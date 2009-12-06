@@ -25,6 +25,15 @@ From the command line, in the root directory of the project:
 	make
 
 
+Documentation
+=============
+
+Documentation can be generated using [Natural Docs]. Generated documentation
+will appear on the [website] with each release. It can be generated as follows:
+
+	NaturalDocs -i . -o HTML docs -p nd
+
+
 Issues
 ======
 
@@ -40,3 +49,5 @@ The pkgparse library is released under the [MIT License](LICENSE).
 [github]: http://www.github.com/
 [issues]: http://github.com/sebnow/pkgparse/issues
 [pkgbuild]: http://www.archlinux.org/pacman/PKGBUILD.5.html
+[natural docs]: http://www.naturaldocs.org
+[website]: http://sebnow.github.com/pkgparse/

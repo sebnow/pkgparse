@@ -19,6 +19,13 @@
  * SOFTWARE.
  */
 
+/* File: pkgbuild_test.c
+Unit tests for pkgbuild related functions.
+
+See Also:
+	<pkgparse.h>
+*/
+
 #include "cmockery.h"
 #include <stdlib.h>
 #include <stdio.h>

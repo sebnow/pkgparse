@@ -19,21 +19,30 @@
  * SOFTWARE.
  */
 
+/* File: utility_test.h
+Unit tests for utility functions.
+
+See Also:
+	<utility.h>
+*/
+
 #include "cmockery.h"
 #include <stdlib.h>
 #include <string.h>
 
 #include "utility.h"
 
-/** Setup function to create a table with test data
- *
- * The following symbols are defined:
- *  - foo => foobar
- *  - ham => eggs and ham
- *  - _eggs => chickens
- *
- * @param table pointer to the address where the table should be stored
- */
+/* Function: create_table
+Setup function to create a table with test data
+
+The following symbols are defined:
+	- foo => foobar
+	- ham => eggs and ham
+	- _eggs => chickens
+
+Parameters:
+	table - A reference to the address where the table should be stored.
+*/
 void create_table(void **table)
 {
 	symbol_t *symbol;
@@ -55,10 +64,12 @@ void create_table(void **table)
 	symbol_release(symbol);
 }
 
-/** Teardown function to release a table created in create_table()
- *
- * @param table pointer to the address where the table is stored
- */
+/* Function: table_release
+A teardown function to release a table created in create_table()
+
+Parameters:
+	table - A reference to the address where the table is stored
+*/
 void release_table(void **table)
 {
 	table_release(*table);

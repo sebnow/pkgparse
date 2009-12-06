@@ -25,9 +25,74 @@
 
 #include "utility.h"
 
+/* Function: _strcpy_partial
+Copy a substring, from start to end.
+
+Parameters:
+	string - The string to be copied.
+	start - A marker indicating the beginning of the substring.
+	end - A marker indicating the end of a substring.
+
+Returns:
+	A copy of the string between start and end. The returned string should be
+	deallocated by the caller.
+*/
 static char *_strcpy_partial(char *string, char *start, char *end);
+
+/* Function: _find_next_substitution
+Locate the next word substitution within a string.
+
+Example:
+	(start code)
+	char *text = "foo$bar baz";
+	char *start = NULL;
+	char *end = NULL;
+	int status = 0;
+
+	status = _find_next_substitution(text, &start, &end);
+	// start -> '$'
+	// end -> 'r'
+	// status -> 1
+	(end)
+
+Parameters:
+	string - The string to be searched.
+	start - The address where the location of the next substitution should be
+		stored. The location will always point to the sigil ('$').
+	end - The address where the location of the end of the word should be stored.
+
+Returns:
+	True (1) on success, otherwise false (0).
+*/
 static int _find_next_substitution(char *string, char **start, char **end);
+
+/* Function: _substitute_words
+Substitute variables with their values
+
+Parameters:
+	table - A symbol table containing the values of variables
+	string - The string to be parsed.
+
+Returns:
+	A string with substituted words, or NULL on error. The returned string
+	should be deallocated by the caller.
+
+See Also:
+	<sh_parse_word()>
+*/
 static char *_substitute_words(table_t *table, char *string);
+
+/* Function: _array_cat
+Concatenate an array of strings to a single string.
+
+Parameters:
+	array - An array of strings.
+
+Returns:
+	A string consisting of all elements in array, delimited by a space, or NULL
+	on error, or if array is empty. The returned string should be deallocated by
+	the caller.
+*/
 static char *_array_cat(char **array);
 
 static char *_strcpy_partial(char *string, char *start, char *end)

@@ -48,12 +48,11 @@ static void _free_splitpkgs(pkgbuild_t **splitpkgs)
 	}
 }
 
-/**
-* @brief Free a pkgbuild_t structure
-*
-* \c pkgbuild must not be NULL.
-*
-* @param pkgbuild the pkgbuild_t object to be freed
+/*
+Free a pkgbuild_t structure
+
+Parameters:
+	pkgbuild - The object to be deallocated. It must not be NULL.
 */
 static void _pkgbuild_free(pkgbuild_t *pkgbuild)
 {

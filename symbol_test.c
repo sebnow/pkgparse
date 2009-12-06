@@ -19,17 +19,36 @@
  * SOFTWARE.
  */
 
+/* File: symbol_test.c
+Unit tests for symbol and table related functions.
+
+See Also:
+	<symbol.h>
+*/
+
 #include "cmockery.h"
 #include <stdlib.h>
 
 #include "symbol.h"
 #include "symbol_private.h"
 
+/* Function: create_symbol
+A setup function to create a symbol, named "foobar".
+
+Parameters:
+	symbol - The address where the new symbol should be stored.
+*/
 void create_symbol(void **symbol)
 {
 	*symbol = (void *)symbol_new("foobar");
 }
 
+/* Function: release_symbol
+A teardown function to release a symbol created with <create_symbol()>.
+
+Parameters:
+	symbol - The address where a reference to the symbol is located.
+*/
 void release_symbol(void **symbol)
 {
 	symbol_release(*symbol);

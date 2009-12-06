@@ -19,6 +19,12 @@
  * SOFTWARE.
  */
 
+/* File: cmockery.h
+
+A conveniance header for including required headers for cmockery. This header
+should only be included for unit tests.
+*/
+
 #include <stdarg.h>
 #include <stddef.h>
 #include <setjmp.h>
