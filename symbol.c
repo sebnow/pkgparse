@@ -229,11 +229,7 @@ char *symbol_name(symbol_t *symbol)
 
 symbol_type_t symbol_type(symbol_t *symbol)
 {
-	symbol_type_t type;
-	if(symbol != NULL) {
-		type = symbol->type;
-	}
-	return type;
+	return symbol->type;
 }
 
 char *symbol_string(symbol_t *symbol)
@@ -256,9 +252,10 @@ char **symbol_array(symbol_t *symbol)
 
 table_t *symbol_function(symbol_t *symbol)
 {
-	table_t *function;
+	table_t *function = NULL;
 	if(symbol != NULL && symbol->type == kSymbolTypeFunction) {
 		function = symbol->rvalue.function;
 	}
 	return function;
 }
+
