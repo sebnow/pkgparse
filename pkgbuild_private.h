@@ -72,6 +72,7 @@ void pkgbuild_set_sha512sums(pkgbuild_t *pkgbuild, char **sha512sums);
 void pkgbuild_set_groups(pkgbuild_t *pkgbuild, char **groups);
 void pkgbuild_set_architectures(pkgbuild_t *pkgbuild, char **architectures);
 void pkgbuild_set_backup(pkgbuild_t *pkgbuild, char **backup);
+void pkgbuild_set_depends(pkgbuild_t *pkgbuild, char **depends);
 void pkgbuild_set_makedepends(pkgbuild_t *pkgbuild, char **makedepends);
 void pkgbuild_set_optdepends(pkgbuild_t *pkgbuild, char **optdepends);
 void pkgbuild_set_conflicts(pkgbuild_t *pkgbuild, char **conflicts);
